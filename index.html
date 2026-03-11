@@ -1,165 +1,199 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
-<title>DICE-M Attendance System </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICE-M Attendance System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
+        .card {
+            background: linear-gradient(to bottom right, #1a9291, #4b3082);
+            /* Mobile First: Full screen width and height */
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff; /* Baahar ka background ab White hai */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+        /* Desktop Adjustment: Add rounded corners and limit width */
+        @media (min-width: 481px) {
+            .card {
+                width: 450px;
+                min-height: 90vh;
+                height: auto;
+                border-radius: 50px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            }
+        }
 
-.card {
-  background: linear-gradient(to bottom right, #1a9291, #4b3082); /* Teal to Purple gradient */
-  width: 450px; /* Slimmer card like the image */
-  height:95vh;
-  padding: 70px 50px;
-  border-radius: 50px; /* Extra rounded corners */
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  text-align: center;
-  color: white;
-}
+        .logo {
+            width: 80px;
+            margin-bottom: 20px;
+        }
 
-h2 {
-  font-size: 40px;
-  margin-bottom: 7px;
-  color: white;
-}
+        h2 {
+            font-size: 28px;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+        }
 
-h3 {
-  margin-top: 0;
-  color: rgba(255,255,255,0.7);
-  font-size: 20px;
-  margin-bottom: 30px;
-}
+        h3 {
+            margin: 0 0 30px 0;
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            font-weight: 400;
+        }
 
-/* Input labels like 'Username' and 'Password' in image */
-.label-text {
-  text-align: left;
-  display: block;
-  font-size: 12px;
-  margin-left: 10px;
-  margin-bottom: 5px;
-  color: rgba(255,255,255,0.8);
-}
+        .input-group {
+            width: 100%;
+            max-width: 350px;
+        }
 
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border-radius: 25px; /* Fully rounded inputs */
-  border: none;
-  background: #d1d5db; /* Greyish background like image */
-  font-size: 14px;
-  box-sizing: border-box;
-  outline: none;
-}
+        input, select {
+            width: 100%;
+            padding: 14px 20px;
+            margin-bottom: 15px;
+            border-radius: 25px;
+            border: none;
+            background: #d1d5db;
+            font-size: 16px; /* Prevents auto-zoom on iOS */
+            box-sizing: border-box;
+            outline: none;
+            color: #333;
+        }
 
-button {
-  background: #ff4d4d; /* Bright Red color */
-  color: white; /* Text white hi rahega taaki red par saaf dikhe */
-  border: none;
-  padding: 15px;
-  width: 100%;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;
-  margin-top: 10px;
-  transition: 0.3s;
-}
+        button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            transition: transform 0.2s, background 0.2s;
+        }
 
-button:hover {
-  background: #cc0000; /* Darker red jab mouse button par le jayein */
-  transform: scale(1.02);
-}
+        button:hover {
+            background: #cc0000;
+        }
 
-.footer-text {
-  font-size: 20px;
-  margin-top: 20px;
-  opacity: 0.6;
-}
+        button:active {
+            transform: scale(0.98);
+        }
 
-.success {
-  color: #2ecc71;
-  font-size: 25px;
-  font-weight: bold;
-}
-</style>
+        .footer-text {
+            font-size: 14px;
+            margin-top: 30px;
+            opacity: 0.7;
+            max-width: 280px;
+        }
+
+        .success {
+            color: #2ecc71;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 24px; /* Prevents layout jump when text appears */
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="card">
-<img src="DICE-M LOGO.png" width="170px">
+    <div class="card">
+        <img src="DICE-M LOGO.png" alt="Logo" class="logo">
 
-<h2>DICE-M COMPUTER ACADEMY</h2>
-<h3>Attendance System</h3>
+        <h2>DICE-M COMPUTER ACADEMY</h2>
+        <h3>Attendance System</h3>
 
-<input type="text" id="student" placeholder="Enter Name" required>
+        <div class="input-group">
+            <input type="text" id="student" placeholder="Enter Name" required>
 
-<select id="role" required>
-<option value="">Select Role</option>
-<option value="Student">Student</option>
-<option value="Teacher">Teacher</option>
-</select>
+            <select id="role" required>
+                <option value="">Select Role</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select>
 
-<select id="status" required >
-<option value="P">select P/A</option>
-<option value="P">Present</option>
-<option value="A">Absent</option>
-</select>
+            <select id="status" required>
+                <option value="P">Select P/A</option>
+                <option value="P">Present</option>
+                <option value="A">Absent</option>
+            </select>
 
-<button onclick="mark()">Submit Attendance</button>
-<p class="footer-text">
-Digital Institute of Computer Education-Mission</p>
+            <button onclick="mark()">Submit Attendance</button>
+        </div>
 
-<p class="success" id="msg"></p>
+        <p class="success" id="msg"></p>
 
-</div>
+        <p class="footer-text">
+            Digital Institute of Computer Education-Mission
+        </p>
+    </div>
 
-<script>
+    <script>
+        // Replace this with your actual Google Apps Script Web App URL
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
+        function mark() {
+            const name = document.getElementById("student").value;
+            const role = document.getElementById("role").value;
+            const status = document.getElementById("status").value;
+            const msgLabel = document.getElementById("msg");
 
-function mark(){
+            if (name.trim() === "" || role === "") {
+                alert("Please fill all fields");
+                return;
+            }
 
-  var name = document.getElementById("student").value;
-  var role = document.getElementById("role").value;
-  var status = document.getElementById("status").value;
+            // Optional: Provide instant feedback to user
+            msgLabel.style.color = "white";
+            msgLabel.innerHTML = "Saving...";
 
-  if(name=="" || role==""){
-    alert("Please fill all fields");
-    return;
-  }
-
-  fetch(scriptURL,{
-    method:"POST",
-    body:JSON.stringify({
-      name:name,
-      role:role,
-      status:status
-    })
-  })
-  .then(res=>res.text())
-  .then(data=>{
-    document.getElementById("msg").innerHTML="Attendance Saved Successfully ✅";
-    document.getElementById("student").value="";
-  })
-  .catch(error=>{
-    alert("Error Saving Attendance ❌");
-  });
-}
-
-</script>
-
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "no-cors", // Use this if you have CORS issues with Apps Script
+                body: JSON.stringify({
+                    name: name,
+                    role: role,
+                    status: status
+                })
+            })
+            .then(() => {
+                msgLabel.style.color = "#2ecc71";
+                msgLabel.innerHTML = "Attendance Saved Successfully ✅";
+                document.getElementById("student").value = "";
+                
+                // Clear success message after 5 seconds
+                setTimeout(() => {
+                    msgLabel.innerHTML = "";
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                msgLabel.style.color = "#ff4d4d";
+                msgLabel.innerHTML = "Error Saving Attendance ❌";
+            });
+        }
+    </script>
 </body>
 </html>
