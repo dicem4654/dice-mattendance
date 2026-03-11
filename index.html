@@ -1,77 +1,95 @@
-
 <html>
 <head>
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0">
-<title>DICE-M Attendance System</title>
+<title>DICE-M Attendance System </title>
+
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff; /* Baahar ka background ab White hai */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.card{
-  background:white;
-  width:450px;
-  padding:70px;
-  border-radius:20px;
-  box-shadow:0 20px 35px rgba(0,0,0,0.3);
-  text-align:center;
+.card {
+  background: linear-gradient(to bottom right, #1a9291, #4b3082); /* Teal to Purple gradient */
+  width: 450px; /* Slimmer card like the image */
+  padding: 70px 50px;
+  border-radius: 50px; /* Extra rounded corners */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  text-align: center;
+  color: white;
 }
 
-h2{
-  font-size:40px;
-  margin-bottom:20px;
-  color:#203a43;
+h2 {
+  font-size: 40px;
+  margin-bottom: 7px;
+  color: white;
 }
 
-h3{
-  
-  margin-top:0;
-  color:gray;
-  font-size:20px;
+h3 {
+  margin-top: 0;
+  color: rgba(255,255,255,0.7);
+  font-size: 20px;
+  margin-bottom: 30px;
 }
 
-input,select,button{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:14px;
+/* Input labels like 'Username' and 'Password' in image */
+.label-text {
+  text-align: left;
+  display: block;
+  font-size: 12px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  color: rgba(255,255,255,0.8);
 }
 
-button{
-  background:#dc3545;
-  color:white;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 25px; /* Fully rounded inputs */
+  border: none;
+  background: #d1d5db; /* Greyish background like image */
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
 }
 
-button:hover{
-  background:#a71d2a;
+button {
+  background: #ff4d4d; /* Bright Red color */
+  color: white; /* Text white hi rahega taaki red par saaf dikhe */
+  border: none;
+  padding: 15px;
+  width: 100%;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  transition: 0.3s;
 }
 
-.success{
-  color:green;
-  font-size:20px;
+button:hover {
+  background: #cc0000; /* Darker red jab mouse button par le jayein */
+  transform: scale(1.02);
 }
 
-@media print{
-  body{
-    background:white;
-  }
-  button{
-    display:none;
-  }
+.footer-text {
+  font-size: 20px;
+  margin-top: 20px;
+  opacity: 0.6;
+}
 
+.success {
+  color: #2ecc71;
+  font-size: 25px;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -108,7 +126,7 @@ Digital Institute of Computer Education-Mission</p>
 
 <script>
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbwnGSZ3O_ANmFyjoYl0-CfmDVtm6zpd_X7qNgKdLUWWOjOf5i3jImgz53gGsiAuJeNqTw/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
 
 function mark(){
 
