@@ -133,6 +133,7 @@
             </select>
 
             <select id="status" required>
+				<option value="P">Select P/A</option>
                 <option value="P">Present</option>
                 <option value="A">Absent</option>
             </select>
@@ -149,102 +150,102 @@
     </div>
 
     <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
+		const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
 
-    // TARGET: DICE-M COMPUTER ACADEMY
-    const targetLat = 24.870778427951855; 
-    const targetLon = 92.55999038457415; 
-    const maxDistance = 200; // Increased to 200m to allow for indoor GPS drift
+		// TARGET: DICE-M COMPUTER ACADEMY
+		const targetLat = 24.870778427951855; 
+		const targetLon = 92.55999038457415; 
+		const maxDistance = 200; // Increased to 200m to allow for indoor GPS drift
 
-    function mark() {
-        const name = document.getElementById("student").value;
-        const role = document.getElementById("role").value;
-        const status = document.getElementById("status").value;
-        const msgLabel = document.getElementById("msg");
-        const retryBtn = document.getElementById("retryBtn");
-        const submitBtn = document.getElementById("submitBtn");
+		function mark() {
+			const name = document.getElementById("student").value;
+			const role = document.getElementById("role").value;
+			const status = document.getElementById("status").value;
+			const msgLabel = document.getElementById("msg");
+			const retryBtn = document.getElementById("retryBtn");
+			const submitBtn = document.getElementById("submitBtn");
 
-        if (name.trim() === "" || role === "") {
-            alert("Please enter your name and select a role.");
-            return;
-        }
+			if (name.trim() === "" || role === "") {
+				alert("Please enter your name and select a role.");
+				return;
+			}
 
-        msgLabel.style.color = "white";
-        msgLabel.innerHTML = "Searching for satellites... 🛰️";
-        retryBtn.style.display = "none";
-        submitBtn.disabled = true;
+			msgLabel.style.color = "white";
+			msgLabel.innerHTML = "Searching for satellites... 🛰️";
+			retryBtn.style.display = "none";
+			submitBtn.disabled = true;
 
-        const options = {
-            enableHighAccuracy: true, // Forces GPS chip
-            timeout: 30000,           // Wait up to 30 seconds
-            maximumAge: 0             // No old/cached locations
-        };
+			const options = {
+				enableHighAccuracy: true, // Forces GPS chip
+				timeout: 30000,           // Wait up to 30 seconds
+				maximumAge: 0             // No old/cached locations
+			};
 
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-                const accuracy = position.coords.accuracy; // How accurate the GPS is in meters
-                
-                const distance = getDistance(userLat, userLon, targetLat, targetLon);
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const userLat = position.coords.latitude;
+					const userLon = position.coords.longitude;
+					const accuracy = position.coords.accuracy; // How accurate the GPS is in meters
+					
+					const distance = getDistance(userLat, userLon, targetLat, targetLon);
 
-                console.log(`Accuracy: ${accuracy}m, Distance: ${distance}m`);
+					console.log(`Accuracy: ${accuracy}m, Distance: ${distance}m`);
 
-                if (distance <= maxDistance) {
-                    saveAttendance(name, role, status, msgLabel, submitBtn);
-                } else {
-                    msgLabel.style.color = "#ff4d4d";
-                    msgLabel.innerHTML = `Too far away! (${Math.round(distance)}m)`;
-                    // This alert helps you see if the phone is just being lazy
-                    alert(`GPS Error: You are ${Math.round(distance)}m away. Accuracy is ${Math.round(accuracy)}m.`);
-                    retryBtn.style.display = "block";
-                    submitBtn.disabled = false;
-                }
-            },
-            (error) => {
-                let errorMsg = "Location failed.";
-                if(error.code == 1) errorMsg = "Please allow Location Access in settings. ❌";
-                if(error.code == 2) errorMsg = "GPS signal lost. Move to a window. ❌";
-                if(error.code == 3) errorMsg = "GPS Timeout. Try again. ❌";
-                
-                msgLabel.style.color = "#ff4d4d";
-                msgLabel.innerHTML = errorMsg;
-                retryBtn.style.display = "block";
-                submitBtn.disabled = false;
-            }, 
-            options
-        );
-    }
+					if (distance <= maxDistance) {
+						saveAttendance(name, role, status, msgLabel, submitBtn);
+					} else {
+						msgLabel.style.color = "#ff4d4d";
+						msgLabel.innerHTML = `Too far away! (${Math.round(distance)}m)`;
+						// This alert helps you see if the phone is just being lazy
+						alert(`GPS Error: You are ${Math.round(distance)}m away. Accuracy is ${Math.round(accuracy)}m.`);
+						retryBtn.style.display = "block";
+						submitBtn.disabled = false;
+					}
+				},
+				(error) => {
+					let errorMsg = "Location failed.";
+					if(error.code == 1) errorMsg = "Please allow Location Access in settings. ❌";
+					if(error.code == 2) errorMsg = "GPS signal lost. Move to a window. ❌";
+					if(error.code == 3) errorMsg = "GPS Timeout. Try again. ❌";
+					
+					msgLabel.style.color = "#ff4d4d";
+					msgLabel.innerHTML = errorMsg;
+					retryBtn.style.display = "block";
+					submitBtn.disabled = false;
+				}, 
+				options
+			);
+		}
 
-    function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; 
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c; 
-    }
+		function getDistance(lat1, lon1, lat2, lon2) {
+			const R = 6371e3; 
+			const dLat = (lat2 - lat1) * Math.PI / 180;
+			const dLon = (lon2 - lon1) * Math.PI / 180;
+			const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+					  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+			return R * c; 
+		}
 
-    function saveAttendance(name, role, status, msgLabel, submitBtn) {
-        msgLabel.innerHTML = "Saving...";
-        fetch(scriptURL, {
-            method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify({ name, role, status })
-        })
-        .then(() => {
-            msgLabel.style.color = "#2ecc71";
-            msgLabel.innerHTML = "Attendance Saved! ✅";
-            document.getElementById("student").value = "";
-            submitBtn.disabled = false;
-            setTimeout(() => { msgLabel.innerHTML = ""; }, 5000);
-        })
-        .catch(() => {
-            msgLabel.innerHTML = "Error saving. ❌";
-            submitBtn.disabled = false;
-        });
-    }
-</script>
+		function saveAttendance(name, role, status, msgLabel, submitBtn) {
+			msgLabel.innerHTML = "Saving...";
+			fetch(scriptURL, {
+				method: "POST",
+				mode: "no-cors",
+				body: JSON.stringify({ name, role, status })
+			})
+			.then(() => {
+				msgLabel.style.color = "#2ecc71";
+				msgLabel.innerHTML = "Attendance Saved! ✅";
+				document.getElementById("student").value = "";
+				submitBtn.disabled = false;
+				setTimeout(() => { msgLabel.innerHTML = ""; }, 5000);
+			})
+			.catch(() => {
+				msgLabel.innerHTML = "Error saving. ❌";
+				submitBtn.disabled = false;
+			});
+		}
+	</script>
 </body>
 </html>
