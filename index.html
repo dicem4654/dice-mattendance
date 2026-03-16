@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DICE-M Attendance System</title>
-<link rel="icon" href="https://dicem4654.github.io/dice-mattendance/app%20icon.png">
-
-	</head>
+    <link rel="icon" href="https://dicem4654.github.io/dice-mattendance/app%20icon.png">
+    <link rel="manifest" href="/manifest.json">
     <style>
         body {
             margin: 0;
@@ -21,7 +20,6 @@
 
         .card {
             background: linear-gradient(to bottom right, #1a9291, #4b3082);
-            /* Mobile First: Full screen width and height */
             width: 100%;
             min-height: 100vh;
             padding: 40px 30px;
@@ -35,7 +33,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Desktop Adjustment: Add rounded corners and limit width */
         @media (min-width: 481px) {
             .card {
                 width: 450px;
@@ -45,8 +42,6 @@
                 box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             }
         }
-
-      
 
         h2 {
             font-size: 28px;
@@ -73,7 +68,7 @@
             border-radius: 25px;
             border: none;
             background: #d1d5db;
-            font-size: 16px; /* Prevents auto-zoom on iOS */
+            font-size: 16px;
             box-sizing: border-box;
             outline: none;
             color: #333;
@@ -93,13 +88,16 @@
             transition: transform 0.2s, background 0.2s;
         }
 
-        button:hover {
-            background: #cc0000;
+        button:hover { background: #cc0000; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #7f8c8d; cursor: not-allowed; }
+
+        .retry-btn {
+            background: #f39c12;
+            display: none; /* Hidden by default */
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
+        .retry-btn:hover { background: #e67e22; }
 
         .footer-text {
             font-size: 14px;
@@ -113,14 +111,14 @@
             font-size: 18px;
             font-weight: bold;
             margin-top: 20px;
-            min-height: 24px; /* Prevents layout jump when text appears */
+            min-height: 24px;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <img src="https://raw.githubusercontent.com/dicem4654/dice-mattendance/main/DICE-M%20LOGO.png" width="120px">
+        <img src="https://raw.githubusercontent.com/dicem4654/dice-mattendance/main/DICE-M%20LOGO.png" width="120px" alt="Logo">
 
         <h2>DICE-M COMPUTER ACADEMY</h2>
         <h3>Attendance System</h3>
@@ -135,12 +133,12 @@
             </select>
 
             <select id="status" required>
-                <option value="P">Select P/A</option>
                 <option value="P">Present</option>
                 <option value="A">Absent</option>
             </select>
 
-            <button onclick="mark()">Submit Attendance</button>
+            <button id="submitBtn" onclick="mark()">Submit Attendance</button>
+            <button id="retryBtn" class="retry-btn" onclick="mark()">Retry Location ↻</button>
         </div>
 
         <p class="success" id="msg"></p>
@@ -151,27 +149,87 @@
     </div>
 
     <script>
-        // Replace this with your actual Google Apps Script Web App URL
         const scriptURL = "https://script.google.com/macros/s/AKfycbxUrvRbgJ_l8rbFLMKh5lvjafOU5GDg_kq8dBJ5DC8lBTkISE_63UZLOzJTBxzcnuqH/exec";
+
+        // --- CONFIGURATION ---
+        const targetLat = 24.8650; // <--- REPLACE WITH YOUR LATITUDE
+        const targetLon = 92.4630; // <--- REPLACE WITH YOUR LONGITUDE
+        const maxDistance = 100;    // Maximum allowed distance in meters
+        // ---------------------
 
         function mark() {
             const name = document.getElementById("student").value;
             const role = document.getElementById("role").value;
             const status = document.getElementById("status").value;
             const msgLabel = document.getElementById("msg");
+            const retryBtn = document.getElementById("retryBtn");
+            const submitBtn = document.getElementById("submitBtn");
 
             if (name.trim() === "" || role === "") {
                 alert("Please fill all fields");
                 return;
             }
 
-            // Optional: Provide instant feedback to user
+            // UI Feedback
             msgLabel.style.color = "white";
-            msgLabel.innerHTML = "Saving...";
+            msgLabel.innerHTML = "Verifying location...";
+            retryBtn.style.display = "none";
+            submitBtn.disabled = true;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        
+                        const distance = getDistance(userLat, userLon, targetLat, targetLon);
+
+                        if (distance <= maxDistance) {
+                            saveAttendance(name, role, status, msgLabel, submitBtn);
+                        } else {
+                            msgLabel.style.color = "#ff4d4d";
+                            msgLabel.innerHTML = `Out of range! You are ${Math.round(distance)}m away. ❌`;
+                            retryBtn.style.display = "block";
+                            submitBtn.disabled = false;
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        msgLabel.style.color = "#ff4d4d";
+                        msgLabel.innerHTML = "Location access denied or timed out. ❌";
+                        retryBtn.style.display = "block";
+                        submitBtn.disabled = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Haversine formula to calculate distance between two points in meters
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth's radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; 
+        }
+
+        function saveAttendance(name, role, status, msgLabel, submitBtn) {
+            msgLabel.style.color = "white";
+            msgLabel.innerHTML = "Saving Attendance...";
 
             fetch(scriptURL, {
                 method: "POST",
-                mode: "no-cors", // Use this if you have CORS issues with Apps Script
+                mode: "no-cors",
                 body: JSON.stringify({
                     name: name,
                     role: role,
@@ -182,8 +240,8 @@
                 msgLabel.style.color = "#2ecc71";
                 msgLabel.innerHTML = "Attendance Saved Successfully ✅";
                 document.getElementById("student").value = "";
+                submitBtn.disabled = false;
                 
-                // Clear success message after 5 seconds
                 setTimeout(() => {
                     msgLabel.innerHTML = "";
                 }, 5000);
@@ -192,9 +250,9 @@
                 console.error('Error!', error.message);
                 msgLabel.style.color = "#ff4d4d";
                 msgLabel.innerHTML = "Error Saving Attendance ❌";
+                submitBtn.disabled = false;
             });
         }
     </script>
 </body>
 </html>
-
