@@ -156,7 +156,7 @@
 		const targetLat = 24.870778427951855; 
 		const targetLon = 92.55999038457415; 
 		const maxDistance = 200; // Increased to 200m to allow for indoor GPS drift
-		const maxEntries = 2; // Device limit
+		
 
 		function mark() {
 			const name = document.getElementById("student").value;
@@ -166,13 +166,7 @@
 			const retryBtn = document.getElementById("retryBtn");
 			const submitBtn = document.getElementById("submitBtn");
 
-			// 1. Check Device Limit
-        let currentCount = parseInt(localStorage.getItem("dice_m_entry_count") || "0");
-        if (currentCount >= maxEntries) {
-            msgLabel.style.color = "#ff4d4d";
-            msgLabel.innerHTML = "Limit Reached: Only 2 entries allowed per device. ❌";
-            return;
-        }
+	
 
 			if (name.trim() === "" || role === "") {
 				alert("Please enter your name and select a role.");
