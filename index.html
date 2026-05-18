@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,11 +133,7 @@
                 <option value="Teacher">Teacher</option>
             </select>
 
-            <select id="status" required>
-				<option value="P">Select P/A</option>
-                <option value="P">Present</option>
-                <option value="A">Absent</option>
-            </select>
+            <input type="hidden" id="status" name="status" value="P">
 
             <button id="submitBtn" onclick="mark()">Submit Attendance</button>
             <button id="retryBtn" class="retry-btn" onclick="mark()">Retry Location ↻</button>
